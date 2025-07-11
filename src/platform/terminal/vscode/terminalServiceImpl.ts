@@ -152,6 +152,14 @@ export class TerminalServiceImpl extends Disposable implements ITerminalService 
 		return getBufferForTerminal(terminal, maxChars);
 	}
 
+	getBufferWithPid(pid: number, maxChars?: number): string {
+		const terminal = this.terminals.find(async t => await t.processId === pid);
+		if (terminal) {
+			return this.getBufferForTerminal(terminal, maxChars);
+		}
+		return '';
+	}
+
 	getLastCommandForTerminal(terminal: Terminal): TerminalExecutedCommand | undefined {
 		return getLastCommandForTerminal(terminal);
 	}

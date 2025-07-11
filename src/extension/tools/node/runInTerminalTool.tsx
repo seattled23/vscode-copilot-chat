@@ -388,15 +388,23 @@ export class RunInTerminalResult extends PromptElement<IRunInTerminalResultProps
 }
 
 interface IGetTerminalOutputParams {
-	id: string;
+	id?: string;
+	pid?: number;
 }
 
 export class GetTerminalOutputTool implements vscode.LanguageModelTool<IGetTerminalOutputParams> {
 	public static readonly toolName = ToolName.GetTerminalOutput;
-
+	constructor(@ITerminalService private readonly terminalService: ITerminalService) { }
 	async invoke(options: vscode.LanguageModelToolInvocationOptions<IGetTerminalOutputParams>, token: CancellationToken) {
-		return new LanguageModelToolResult([
-			new LanguageModelTextPart(`Output of terminal ${options.input.id}:\n${RunInTerminalTool.getBackgroundOutput(options.input.id)}`)]);
+		if (options.input.id) {
+			return new LanguageModelToolResult([
+				new LanguageModelTextPart(`Output of terminal ${options.input.id}:\n${RunInTerminalTool.getBackgroundOutput(options.input.id)}`)]);
+		} else if (options.input.pid) {
+			const buffer = this.terminalService.getBufferWithPid(options.input.pid);
+			return new LanguageModelToolResult([
+				new LanguageModelTextPart(`Output of terminal:\n${buffer}`)
+			]);
+		}
 	}
 
 	prepareInvocation(options: vscode.LanguageModelToolInvocationPrepareOptions<IGetTerminalOutputParams>, token: vscode.CancellationToken): vscode.ProviderResult<vscode.PreparedToolInvocation> {
