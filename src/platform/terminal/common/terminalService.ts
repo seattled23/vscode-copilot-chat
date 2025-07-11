@@ -80,7 +80,7 @@ export interface ITerminalService {
 	 * Gets the buffer for a terminal with the given pid.
 	 * @param maxChars The maximum number of chars to return from the buffer, defaults to 16k
 	 */
-	getBufferWithPid(pid: number, maxChars?: number): string;
+	getBufferWithPid(pid: number, maxChars?: number): Promise<string>;
 
 	/**
 	 * Gets the last command executed in a terminal.
@@ -163,8 +163,8 @@ export class NullTerminalService extends Disposable implements ITerminalService 
 		return '';
 	}
 
-	getBufferWithPid(pid: number, maxChars?: number): string {
-		return '';
+	getBufferWithPid(pid: number, maxChars?: number): Promise<string> {
+		return Promise.resolve('');
 	}
 
 	getLastCommandForTerminal(terminal: vscode.Terminal): vscode.TerminalExecutedCommand | undefined {

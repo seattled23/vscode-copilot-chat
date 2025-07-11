@@ -400,9 +400,8 @@ export class GetTerminalOutputTool implements vscode.LanguageModelTool<IGetTermi
 			return new LanguageModelToolResult([
 				new LanguageModelTextPart(`Output of terminal ${options.input.id}:\n${RunInTerminalTool.getBackgroundOutput(options.input.id)}`)]);
 		} else if (options.input.pid) {
-			const buffer = this.terminalService.getBufferWithPid(options.input.pid);
 			return new LanguageModelToolResult([
-				new LanguageModelTextPart(`Output of terminal:\n${buffer}`)
+				new LanguageModelTextPart(`Output of terminal ${options.input.pid}:\n${await this.terminalService.getBufferWithPid(options.input.pid)}`)
 			]);
 		}
 	}
