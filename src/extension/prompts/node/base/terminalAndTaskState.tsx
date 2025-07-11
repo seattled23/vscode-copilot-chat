@@ -108,7 +108,7 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 					)}
 					{mappedOtherTerminals.length > 0 && (
 						<>
-							Other Terminals:<br />
+							User created Terminals:<br />
 							{mappedOtherTerminals.map((term) => (
 								<>
 									Terminal: {term.name}<br />
