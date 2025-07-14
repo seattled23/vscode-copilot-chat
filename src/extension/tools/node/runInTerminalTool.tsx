@@ -388,28 +388,30 @@ export class RunInTerminalResult extends PromptElement<IRunInTerminalResultProps
 }
 
 interface IGetTerminalOutputParams {
-	id?: string;
-	pid?: number;
+	id: string;
 }
 
 export class GetTerminalOutputTool implements vscode.LanguageModelTool<IGetTerminalOutputParams> {
 	public static readonly toolName = ToolName.GetTerminalOutput;
 	constructor(@ITerminalService private readonly terminalService: ITerminalService) { }
 	async invoke(options: vscode.LanguageModelToolInvocationOptions<IGetTerminalOutputParams>, token: CancellationToken) {
-		if (options.input.id) {
+		// Only treat as process ID if the input is a valid integer string
+		const processId = Number(options.input.id);
+		if (Number.isInteger(processId) && processId > 0) {
 			return new LanguageModelToolResult([
-				new LanguageModelTextPart(`Output of terminal ${options.input.id}:\n${RunInTerminalTool.getBackgroundOutput(options.input.id)}`)]);
-		} else if (options.input.pid) {
+				new LanguageModelTextPart(`Output of terminal ${processId}:\n${await this.terminalService.getBufferWithPid(processId)}`)
+			]);
+		} else {
 			return new LanguageModelToolResult([
-				new LanguageModelTextPart(`Output of terminal ${options.input.pid}:\n${await this.terminalService.getBufferWithPid(options.input.pid)}`)
+				new LanguageModelTextPart(`Output of terminal ${options.input.id}:\n${RunInTerminalTool.getBackgroundOutput(options.input.id)}`)
 			]);
 		}
 	}
 
 	prepareInvocation(options: vscode.LanguageModelToolInvocationPrepareOptions<IGetTerminalOutputParams>, token: vscode.CancellationToken): vscode.ProviderResult<vscode.PreparedToolInvocation> {
 		return {
-			invocationMessage: l10n.t`Checking background terminal output`,
-			pastTenseMessage: l10n.t`Checked background terminal output`
+			invocationMessage: l10n.t`Checking terminal output`,
+			pastTenseMessage: l10n.t`Checked terminal output`
 		};
 	}
 }

@@ -45,7 +45,7 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 
 		if (this.terminalService && Array.isArray(this.terminalService.terminals)) {
 			const copilotTerminals = await this.terminalService.getCopilotTerminals(this.props.sessionId, true);
-			const otherTerminals = this.terminalService.terminals.filter(term => !copilotTerminals.find(t => t.id === term.id));
+			const otherTerminals = this.terminalService.terminals.filter(term => !copilotTerminals.find(async t => await t.processId === await term.processId));
 			const mappedCopilotTerminals = copilotTerminals.map((term) => {
 				const lastCommand = this.terminalService.getLastCommandForTerminal(term);
 				return {
@@ -58,7 +58,7 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 			const mappedOtherTerminals = await Promise.all(otherTerminals.map(async (term) => {
 				return {
 					name: term.name,
-					pid: await term.processId,
+					pid: (await term.processId).toString(),
 				};
 			}));
 

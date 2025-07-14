@@ -429,11 +429,7 @@
 					"properties": {
 						"id": {
 							"type": "string",
-							"description": "The ID of the terminal command output to check."
-						},
-						"pid": {
-							"type": "number",
-							"description": "The process ID of the terminal command to check. If provided, this will be used to find the terminal instead of the ID."
+							"description": "The ID or processID of the terminal command output to check."
 						}
 					}
 				}
