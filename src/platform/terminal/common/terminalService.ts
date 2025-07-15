@@ -20,7 +20,7 @@ export interface ITerminalService {
 
 	readonly terminalSelection: string;
 
-	terminalShellType: string;
+	readonly terminalShellType: string;
 
 	readonly onDidChangeTerminalShellIntegration: vscode.Event<vscode.TerminalShellIntegrationChangeEvent>;
 	readonly onDidEndTerminalShellExecution: vscode.Event<vscode.TerminalShellExecutionEndEvent>;
