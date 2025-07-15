@@ -26,7 +26,6 @@ export interface ITerminalService {
 	readonly onDidEndTerminalShellExecution: vscode.Event<vscode.TerminalShellExecutionEndEvent>;
 	readonly onDidCloseTerminal: vscode.Event<vscode.Terminal>;
 	readonly onDidWriteTerminalData: vscode.Event<vscode.TerminalDataWriteEvent>;
-	readonly onDidChangeTerminalState: vscode.Event<vscode.Terminal>;
 
 	/**
 	 * See {@link vscode.window.createTerminal}.

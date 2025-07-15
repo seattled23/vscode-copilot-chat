@@ -4,16 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Disposable, Terminal, TerminalExecutedCommand, window } from 'vscode';
-import { Emitter, Event } from '../../../util/vs/base/common/event';
 import { basename } from '../../../util/vs/base/common/path';
 import { platform } from '../../../util/vs/base/common/process';
 import { removeAnsiEscapeCodes } from '../../../util/vs/base/common/strings';
 
 const terminalBuffers: Map<Terminal, string[]> = new Map();
 const terminalCommands: Map<Terminal, TerminalExecutedCommand[]> = new Map();
-
-const _onDidChangeShellType = new Emitter<string>();
-export const onDidChangeShellType: Event<string> = _onDidChangeShellType.event;
 
 export function getActiveTerminalBuffer(): string {
 	const activeTerminal = window.activeTerminal;
@@ -117,6 +113,7 @@ function appendLimitedWindow<T>(target: T[], data: T) {
 		target.shift();
 	}
 }
+console.log('am i on the new code');
 
 export function installTerminalBufferListeners(): Disposable[] {
 	return [
@@ -125,7 +122,6 @@ export function installTerminalBufferListeners(): Disposable[] {
 				const newShellType = t.state.shell;
 				if (newShellType && newShellType !== lastDetectedShellType) {
 					lastDetectedShellType = newShellType;
-					_onDidChangeShellType.fire(newShellType);
 				}
 			}
 		}),
