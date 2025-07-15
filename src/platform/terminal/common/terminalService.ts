@@ -20,12 +20,13 @@ export interface ITerminalService {
 
 	readonly terminalSelection: string;
 
-	readonly terminalShellType: string;
+	terminalShellType: string;
 
 	readonly onDidChangeTerminalShellIntegration: vscode.Event<vscode.TerminalShellIntegrationChangeEvent>;
 	readonly onDidEndTerminalShellExecution: vscode.Event<vscode.TerminalShellExecutionEndEvent>;
 	readonly onDidCloseTerminal: vscode.Event<vscode.Terminal>;
 	readonly onDidWriteTerminalData: vscode.Event<vscode.TerminalDataWriteEvent>;
+	readonly onDidChangeTerminalState: vscode.Event<vscode.Terminal>;
 
 	/**
 	 * See {@link vscode.window.createTerminal}.
@@ -93,6 +94,8 @@ export const enum ShellIntegrationQuality {
 
 
 export class NullTerminalService extends Disposable implements ITerminalService {
+	private _onDidChangeTerminalState = this._register(new Emitter<vscode.Terminal>());
+	onDidChangeTerminalState: vscode.Event<vscode.Terminal> = this._onDidChangeTerminalState.event;
 	private _onDidWriteTerminalData = this._register(new Emitter<vscode.TerminalDataWriteEvent>());
 	onDidWriteTerminalData: Event<vscode.TerminalDataWriteEvent> = this._onDidWriteTerminalData.event;
 	private _onDidChangeTerminalShellIntegration = this._register(new Emitter<vscode.TerminalShellIntegrationChangeEvent>());

@@ -9,7 +9,7 @@ import { Disposable } from '../../../util/vs/base/common/lifecycle';
 import { IChatSessionService } from '../../chat/common/chatSessionService';
 import { IVSCodeExtensionContext } from '../../extContext/common/extensionContext';
 import { IKnownTerminal, ITerminalService, ShellIntegrationQuality } from '../common/terminalService';
-import { getActiveTerminalBuffer, getActiveTerminalLastCommand, getActiveTerminalSelection, getActiveTerminalShellType, getBufferForTerminal, getLastCommandForTerminal, installTerminalBufferListeners } from './terminalBufferListener';
+import { getActiveTerminalBuffer, getActiveTerminalLastCommand, getActiveTerminalSelection, getActiveTerminalShellType, getBufferForTerminal, getLastCommandForTerminal, installTerminalBufferListeners, onDidChangeShellType } from './terminalBufferListener';
 
 export const TerminalSessionStorageKey = 'runInTerminalTool.sessionTerminals';
 export class TerminalServiceImpl extends Disposable implements ITerminalService {
@@ -74,6 +74,13 @@ export class TerminalServiceImpl extends Disposable implements ITerminalService 
 	}
 	get onDidWriteTerminalData(): Event<TerminalDataWriteEvent> {
 		return window.onDidWriteTerminalData;
+	}
+	get onDidChangeTerminalState(): Event<Terminal> {
+		return window.onDidChangeTerminalState;
+	}
+
+	get onDidChangeTerminalShellType(): Event<string> {
+		return onDidChangeShellType;
 	}
 
 	createTerminal(name?: string, shellPath?: string, shellArgs?: readonly string[] | string): Terminal;
