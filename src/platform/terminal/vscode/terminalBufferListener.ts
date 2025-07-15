@@ -99,11 +99,7 @@ export function getActiveTerminalShellType(): string {
 
 	// Fall back to bash or PowerShell, this uses the front end OS so it could give the wrong shell
 	// when remoting from Windows into non-Windows or vice versa.
-	const defaultShell = platform === 'win32' ? 'powershell' : 'bash';
-	if (defaultShell !== lastDetectedShellType) {
-		lastDetectedShellType = defaultShell;
-	}
-	return defaultShell;
+	return platform === 'win32' ? 'powershell' : 'bash';
 }
 
 function appendLimitedWindow<T>(target: T[], data: T) {
