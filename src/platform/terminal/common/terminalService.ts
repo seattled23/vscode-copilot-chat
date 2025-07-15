@@ -93,8 +93,6 @@ export const enum ShellIntegrationQuality {
 
 
 export class NullTerminalService extends Disposable implements ITerminalService {
-	private _onDidChangeTerminalState = this._register(new Emitter<vscode.Terminal>());
-	onDidChangeTerminalState: vscode.Event<vscode.Terminal> = this._onDidChangeTerminalState.event;
 	private _onDidWriteTerminalData = this._register(new Emitter<vscode.TerminalDataWriteEvent>());
 	onDidWriteTerminalData: Event<vscode.TerminalDataWriteEvent> = this._onDidWriteTerminalData.event;
 	private _onDidChangeTerminalShellIntegration = this._register(new Emitter<vscode.TerminalShellIntegrationChangeEvent>());
