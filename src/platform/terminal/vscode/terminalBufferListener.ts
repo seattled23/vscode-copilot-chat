@@ -109,7 +109,6 @@ function appendLimitedWindow<T>(target: T[], data: T) {
 		target.shift();
 	}
 }
-console.log('am i on the new code2');
 
 export function installTerminalBufferListeners(): Disposable[] {
 	return [
