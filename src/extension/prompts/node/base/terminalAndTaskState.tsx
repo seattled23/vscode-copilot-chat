@@ -62,9 +62,10 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 						exitCode: lastCommand.exitCode,
 					} : undefined
 				} as ITerminalPromptInfo;
-			}).filter(t => t !== undefined)) as ITerminalPromptInfo[];
+			}));
+			const resultTerminals = terminals.filter(t => !!t);
 
-			if (terminals.length === 0 && tasks.length === 0) {
+			if (resultTerminals.length === 0 && tasks.length === 0) {
 				return 'No tasks or terminals found.';
 			}
 
@@ -90,10 +91,10 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 
 			const renderTerminals = () => (
 				<>
-					{terminals.length > 0 && (
+					{resultTerminals.length > 0 && (
 						<>
 							Terminals:<br />
-							{terminals.map((term: ITerminalPromptInfo) => (
+							{resultTerminals.map((term: ITerminalPromptInfo) => (
 								<>
 									Terminal: {term.name}<br />
 									{term.lastCommand ? (
@@ -108,10 +109,10 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 							))}
 						</>
 					)}
-					{terminals.length > 0 && (
+					{resultTerminals.length > 0 && (
 						<>
 							User created Terminals:<br />
-							{terminals.map((term) => (
+							{resultTerminals.map((term) => (
 								<>
 									Terminal: {term.name}<br />
 									Output: {'{'}Use {ToolName.GetTerminalOutput} for terminal with pid: {term.pid}.{'}'}<br />
@@ -125,7 +126,7 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 			return (
 				<>
 					{tasks.length > 0 ? renderTasks() : 'Tasks: No tasks found.'}
-					{terminals.length > 0 || terminals.length > 0 ? renderTerminals() : 'Copilot Terminals: No active Copilot terminals found.'}
+					{resultTerminals.length > 0 ? renderTerminals() : 'Terminals: No terminals found.'}
 				</>
 			);
 		}
