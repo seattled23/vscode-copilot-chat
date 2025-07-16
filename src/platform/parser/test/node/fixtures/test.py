@@ -5,7 +5,6 @@ This is a multi-line comment
 """
 
 # Importing a module
-import math
 
 # Variable assignment
 x = 10
@@ -14,7 +13,6 @@ x = 10
 # Function definition
 def square(num):
     """This is a docstring"""
-    foo = a or b
     return num**2
 
 
@@ -66,7 +64,8 @@ with open("file.txt", "w") as f:
     f.write("Hello, World!")
 
 # Lambda function
-square = lambda x: x**2
+def square(x):
+    return x**2
 
 # Generator expression
 gen = (i**2 for i in range(10))

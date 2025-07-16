@@ -7,7 +7,8 @@ def greet(name):
 
 
 # lambdas
-greet2 = lambda name: print(f"Hello, {name}!")
+def greet2(name):
+    return print(f"Hello, {name}!")
 greet2("Eve")
 
 greet("Bob")

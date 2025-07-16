@@ -12,7 +12,7 @@ def subarray_min_max_sum(l):
     min_sum = complete_sum - l[0]
     max_sum = complete_sum - l[0]
     for x in l[1:]:
-        temp_sum = complete_sum - x
+        complete_sum - x
         min_sum = min(min_sum, tmp_sum)
         max_sum = max(max_sum, tmp_sum)
     return min_sum, max_sum

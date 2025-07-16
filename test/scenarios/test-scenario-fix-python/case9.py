@@ -11,7 +11,7 @@ def palindrome(s, inner=False):
         if s[i] == s[j]:
             i += 1
             j += -1
-        elif inner == False:
+        elif not inner:
             if s[i + 1 : j + 1] == palindrome(s[i + 1 : j + 1], inner=True):
                 return s[0:i] + s[i : j + 1] + s[j + 1 :]
             elif s[i:j] == palindrome(s[i:j], inner=True):
