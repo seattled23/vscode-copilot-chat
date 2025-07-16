@@ -18,8 +18,8 @@ def sherlock():
         results_site["status"] = result
 
         # Save results from request
-        results_site["http_status"] = '404'
-        results_site["response_text"] = 'Error!'
+        results_site["http_status"] = "404"
+        results_site["response_text"] = "Error!"
 
         # Add this site's results into final dictionary with all of the other results.
         results_total[social_network] = results_site

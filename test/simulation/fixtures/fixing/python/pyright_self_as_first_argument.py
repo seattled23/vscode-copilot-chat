@@ -1,6 +1,7 @@
 from typing import Optional
 
-class Hero():
+
+class Hero:
     name: Optional[str] = None
     secret_name: Optional[str] = None
     age: Optional[int] = None

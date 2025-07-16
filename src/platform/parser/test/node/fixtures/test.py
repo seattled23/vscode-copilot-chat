@@ -10,11 +10,13 @@ import math
 # Variable assignment
 x = 10
 
+
 # Function definition
 def square(num):
     """This is a docstring"""
     foo = a or b
-    return num ** 2
+    return num**2
+
 
 # Conditional statements
 if x > 0:
@@ -35,6 +37,7 @@ while x > 0:
 # List comprehension
 squares = [i**2 for i in range(10)]
 
+
 # Class definition
 class MyClass:
     def __init__(self, name):
@@ -42,6 +45,7 @@ class MyClass:
 
     def greet(self):
         print(f"Hello, {self.name}")
+
 
 # Creating an object
 obj = MyClass("Python")
@@ -58,7 +62,7 @@ finally:
     print("End of error handling")
 
 # With statement
-with open('file.txt', 'w') as f:
+with open("file.txt", "w") as f:
     f.write("Hello, World!")
 
 # Lambda function
@@ -67,16 +71,20 @@ square = lambda x: x**2
 # Generator expression
 gen = (i**2 for i in range(10))
 
+
 # Decorator
 def my_decorator(func):
     def wrapper():
         print("Before function call")
         func()
         print("After function call")
+
     return wrapper
+
 
 @my_decorator
 def say_hello():
     print("Hello")
+
 
 say_hello()

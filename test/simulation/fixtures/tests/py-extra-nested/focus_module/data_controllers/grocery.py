@@ -4,5 +4,6 @@ class GroceryItem:
         self.price = price
         self.quantity = quantity
 
+
 def create_grocery_item(name, price, quantity):
     return GroceryItem(name, price, quantity)
