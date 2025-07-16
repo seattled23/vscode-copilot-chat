@@ -24,11 +24,14 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 		super(props);
 	}
 	async render() {
-		const resultTasks: { name: string; isBackground: boolean; type?: string; command?: string; problemMatcher?: string; group?: { isDefault?: boolean; kind?: string }; script?: string; dependsOn?: string; isActive?: boolean }[] = [];
+		const resultTasks: ITaskPromptInfo[] = [];
 		const allTasks = this.tasksService.getTasks()?.[0]?.[1] ?? [];
 		const tasks = Array.isArray(allTasks) ? allTasks : [];
-		for (const exec of tasks.filter(t => this.tasksService.getTerminalForTask(t))) {
+		const taskTerminalPids = new Set<number>();
+		const validTasks = tasks.filter(t => !!this.tasksService.getTerminalForTask(t));
+		for (const exec of validTasks) {
 			if (exec.label) {
+				taskTerminalPids.add(await exec.processId);
 				resultTasks.push({
 					name: exec.label,
 					isBackground: exec.isBackground,
@@ -44,26 +47,25 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 		}
 
 		if (this.terminalService && Array.isArray(this.terminalService.terminals)) {
-			const copilotTerminals = await this.terminalService.getCopilotTerminals(this.props.sessionId, true);
-			const otherTerminals = this.terminalService.terminals.filter(term => !copilotTerminals.find(async t => await t.processId === await term.processId));
-			const mappedCopilotTerminals = copilotTerminals.map((term) => {
-				const lastCommand = this.terminalService.getLastCommandForTerminal(term);
+			const terminals = await Promise.all(this.terminalService.terminals.map(async (term) => {
+				const lastCommand = await this.terminalService.getLastCommandForTerminal(term);
+				const pid = await term.processId;
+				if (taskTerminalPids.has(pid)) {
+					return undefined;
+				}
 				return {
 					name: term.name,
-					lastCommand,
-					id: term.id,
-					isCopilotTerminal: true
-				};
-			});
-			const mappedOtherTerminals = await Promise.all(otherTerminals.map(async (term) => {
-				return {
-					name: term.name,
-					pid: (await term.processId).toString(),
-				};
-			}));
+					pid,
+					lastCommand: lastCommand ? {
+						commandLine: lastCommand.commandLine ?? '(no last command)',
+						cwd: lastCommand.cwd?.toString() ?? '(unknown)',
+						exitCode: lastCommand.exitCode,
+					} : undefined
+				} as ITerminalPromptInfo;
+			}).filter(t => t !== undefined)) as ITerminalPromptInfo[];
 
-			if (mappedCopilotTerminals.length === 0 && mappedOtherTerminals.length === 0 && tasks.length === 0) {
-				return 'No tasks or Copilot terminals found.';
+			if (terminals.length === 0 && tasks.length === 0) {
+				return 'No tasks or terminals found.';
 			}
 
 			const renderTasks = () =>
@@ -88,10 +90,10 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 
 			const renderTerminals = () => (
 				<>
-					{mappedCopilotTerminals.length > 0 && (
+					{terminals.length > 0 && (
 						<>
-							Active Copilot Terminals:<br />
-							{mappedCopilotTerminals.map((term) => (
+							Terminals:<br />
+							{terminals.map((term: ITerminalPromptInfo) => (
 								<>
 									Terminal: {term.name}<br />
 									{term.lastCommand ? (
@@ -101,15 +103,15 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 											Exit Code: {term.lastCommand.exitCode ?? '(unknown)'}<br />
 										</>
 									) : ''}
-									Output: {'{'}Use {ToolName.GetTerminalOutput} for terminal with ID: {term.id}.{'}'}<br />
+									Output: {'{'}Use {ToolName.GetTerminalOutput} for terminal with ID: {term.pid}.{'}'}<br />
 								</>
 							))}
 						</>
 					)}
-					{mappedOtherTerminals.length > 0 && (
+					{terminals.length > 0 && (
 						<>
 							User created Terminals:<br />
-							{mappedOtherTerminals.map((term) => (
+							{terminals.map((term) => (
 								<>
 									Terminal: {term.name}<br />
 									Output: {'{'}Use {ToolName.GetTerminalOutput} for terminal with pid: {term.pid}.{'}'}<br />
@@ -123,9 +125,26 @@ export class TerminalAndTaskStatePromptElement extends PromptElement<TerminalAnd
 			return (
 				<>
 					{tasks.length > 0 ? renderTasks() : 'Tasks: No tasks found.'}
-					{mappedCopilotTerminals.length > 0 || mappedOtherTerminals.length > 0 ? renderTerminals() : 'Copilot Terminals: No active Copilot terminals found.'}
+					{terminals.length > 0 || terminals.length > 0 ? renderTerminals() : 'Copilot Terminals: No active Copilot terminals found.'}
 				</>
 			);
 		}
 	}
+}
+interface ITaskPromptInfo {
+	name: string;
+	isBackground: boolean;
+	type?: string;
+	command?: string;
+	problemMatcher?: string;
+	group?: { isDefault?: boolean; kind?: string };
+	script?: string;
+	dependsOn?: string;
+	isActive?: boolean;
+}
+
+interface ITerminalPromptInfo {
+	name: string;
+	pid: number | undefined;
+	lastCommand: { commandLine: string; cwd: string; exitCode: number | undefined } | undefined;
 }
